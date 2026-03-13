@@ -1,3 +1,5 @@
+"""Database abstraction layer for storing meter readings."""
+
 import sqlite3
 from datetime import timezone
 from typing import Callable, Self
@@ -8,12 +10,15 @@ from aquifer.meter import Reading
 
 
 class Readings:
+    """Repository for meter readings stored in a SQLite database."""
+
     _get_connection: Callable[[], sqlite3.Connection]
 
     def __init__(self, get_connection: Callable[[], sqlite3.Connection]):
         self._get_connection = get_connection
 
     def initialize(self) -> None:
+        """Create the readings table if it does not already exist."""
         with self._get_connection() as conn:
             conn.execute(
                 """
@@ -25,12 +30,22 @@ class Readings:
             )
 
     def add(self, reading: Reading) -> None:
+        """Insert or replace a reading in the database.
+
+        Args:
+            reading: The meter reading to persist.
+        """
         self._get_connection().execute(
             "INSERT OR REPLACE INTO readings (timestamp, total_consumption) VALUES (?, ?)",
             (reading.timestamp.astimezone(timezone.utc).isoformat(), reading.total_consumption),
         )
 
     def all(self) -> pd.DataFrame:
+        """Return all readings ordered by timestamp ascending.
+
+        Returns:
+            A DataFrame indexed by timestamp with a ``total_consumption`` column.
+        """
         return pd.read_sql_query(
             "SELECT timestamp, total_consumption FROM readings ORDER BY timestamp ASC",
             self._get_connection(),
@@ -40,6 +55,8 @@ class Readings:
 
 
 class Database:
+    """Context manager for a SQLite database connection."""
+
     _path: str
     _connection: sqlite3.Connection | None = None
 
@@ -71,10 +88,16 @@ class Database:
 
     @property
     def connection(self) -> sqlite3.Connection:
+        """Return the active SQLite connection.
+
+        Raises:
+            RuntimeError: If accessed outside of a ``with`` block.
+        """
         if self._connection is None:
             raise RuntimeError("Use 'with Database(...) as db:'")
         return self._connection
 
     @property
     def readings(self) -> Readings:
+        """Return the readings repository backed by the active connection."""
         return Readings(lambda: self.connection)
