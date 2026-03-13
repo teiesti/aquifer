@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aquifer"
+version = "0.1.0"
+authors = [
+    {name = "Tobias Stolzmann", email = "tobias.stolzmann@gmail.com"},
+]
+description = "Rainwater tank storage estimation using rainfall data and metered water use"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+dependencies = [
+    # "meteostat>=2.1",
+    # "pandas>=3.0",
+    # "requests>=2.32",
+    # "typer>=0.24",
+]
+
+[project.optional-dependencies]
+dev = [
+    "mypy>=1.18",
+    "pytest>=9.0",
+    "ruff>=0.15",
+    # "types-requests>=2.32",
+]
+
+[project.urls]
+Repository = "https://github.com/teiesti/aquifer.git"
+
+[project.scripts]
+aquifer = "aquifer.command_line:app"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+src = ["src"]
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "F",    # pyflakes
+    "PL",   # pylint
+    "B",    # bugbear
+    "S",    # bandit
+    "E",    # pycodestyle: errors
+    "W",    # pycodestyle: warnings
+    "D",    # pydocstyle
+    "I",    # isort
+]
+ignore = [
+    "D105", # pydocstyle: missing docstring in magic method
+    "D107", # pydocstyle: missing docstring in __init__
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
