@@ -2,7 +2,7 @@
 
 Water, inferred.
 
-**Aquifer** estimates the current storage level of a rainwater tank from publicly available rainfall data and a metered water withdrawal.
+**Aquifer** estimates the current storage level of a rainwater tank from publicly available rainfall data and metered outflow.
 
 ## Concept
 
@@ -40,7 +40,7 @@ Outflow is derived from the difference between consecutive readings.
 Outflow(t) = Reading(t) - Reading(t-1)
 ```
 
-We assume the readings are monotone.
+We assume the readings are monotonically non-decreasing (each reading is greater than or equal to the previous one); meter resets or rollovers must be detected and handled separately.
 
 ## Installation
 
