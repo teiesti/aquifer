@@ -44,7 +44,7 @@ class Meter:
         """Fetch the current reading from the meter endpoint.
 
         Returns:
-            A Reading with the current timestamp and total consumption in liters.
+            A Reading with the timestamp reported by the meter and total consumption in liters.
 
         Raises:
             requests.HTTPError: If the HTTP request to the endpoint fails.
@@ -57,10 +57,13 @@ class Meter:
         match self._driver:
             case Driver.WASSERLESER:
                 data = response.json()
-                return Reading(
-                    timestamp=datetime.fromtimestamp(int(data["timestamp"]), tz=timezone.utc),
-                    total_consumption=_m3_string_to_liters(data["total_consumption"]),
-                )
+                try:
+                    return Reading(
+                        timestamp=datetime.fromtimestamp(int(data["timestamp"]), tz=timezone.utc),
+                        total_consumption=_m3_string_to_liters(data["total_consumption"]),
+                    )
+                except (KeyError, TypeError) as exc:
+                    raise ValueError("Invalid response schema from meter endpoint") from exc
 
             case _:
                 raise NotImplementedError(f"Unsupported driver: {self._driver}")
