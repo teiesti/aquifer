@@ -19,22 +19,26 @@ class Readings:
 
     def initialize(self) -> None:
         """Create the readings table if it does not already exist."""
-        with self._get_connection() as conn:
-            conn.execute(
-                """
-                CREATE TABLE IF NOT EXISTS readings (
-                    timestamp TEXT PRIMARY KEY,
-                    total_consumption REAL NOT NULL
-                )
-                """
+        self._get_connection().execute(
+            """
+            CREATE TABLE IF NOT EXISTS readings (
+                timestamp TEXT PRIMARY KEY,
+                total_consumption REAL NOT NULL
             )
+            """
+        )
 
     def add(self, reading: Reading) -> None:
         """Insert or replace a reading in the database.
 
         Args:
             reading: The meter reading to persist.
+
+        Raises:
+            ValueError: If ``reading.timestamp`` is a naive datetime with no timezone info.
         """
+        if reading.timestamp.tzinfo is None:
+            raise ValueError("reading.timestamp must be timezone-aware")
         self._get_connection().execute(
             "INSERT OR REPLACE INTO readings (timestamp, total_consumption) VALUES (?, ?)",
             (reading.timestamp.astimezone(timezone.utc).isoformat(), reading.total_consumption),
