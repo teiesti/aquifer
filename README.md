@@ -79,7 +79,47 @@ Aquifer will look for a configuration in
 
 ## Usage
 
-TODO
+Aquifer is controlled via a command-line interface.
+The general form is:
+
+```sh
+aquifer <command> <subcommand> [options]
+```
+
+### `meter` – Water meter readings
+
+The `meter` command group manages discharge measurements polled from the water meter.
+
+#### `aquifer meter poll`
+
+Poll the water meter once and print the current reading:
+
+```sh
+aquifer meter poll
+```
+
+Options:
+
+| Option | Description |
+|--------|-------------|
+| `--record` | Persist the reading to the database. |
+| `--watch` | Poll continuously at the interval configured in `aquifer.toml`. |
+
+To poll continuously and record every reading, run:
+
+```sh
+aquifer meter poll --watch --record
+```
+
+Press <kbd>Ctrl+C</kbd> to stop.
+
+#### `aquifer meter history`
+
+Display all previously recorded readings from the database:
+
+```sh
+aquifer meter history
+```
 
 ## License
 
