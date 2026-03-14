@@ -4,6 +4,11 @@ Water, inferred.
 
 **Aquifer** estimates the current storage level of a rainwater tank from publicly available rainfall data and metered outflow.
 
+> [!WARNING]
+> Aquifer is currently in an early stage of development and not yet ready for production use.
+> Many features are still missing or subject to change without prior notice.
+> Use at your own risk!
+
 ## Concept
 
 Without a level sensor, a buried or opaque rainwater tank is like a geological [aquifer](https://en.wikipedia.org/wiki/Aquifer).
