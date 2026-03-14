@@ -1,5 +1,6 @@
 """Command-line interface for managing water meter readings."""
 
+from datetime import datetime
 import time
 from typing import Annotated
 
@@ -13,6 +14,17 @@ app = typer.Typer(help="Persisted discharge measurements polled from the water m
 
 
 @app.command()
+def history() -> None:
+    """Display the history of recorded discharge measurements."""
+    config = Configuration.find()
+    with Database(config.database.path) as db:
+        local_tz = datetime.now().astimezone().tzinfo
+        df = db.readings.all()
+        df.index = df.index.tz_convert(local_tz)
+        typer.echo(df)
+
+
+@app.command()
 def poll(
     record: Annotated[bool, typer.Option("--record", help="Persist the polled reading to the database.")] = False,
     watch: Annotated[bool, typer.Option("--watch", help="Poll continuously at a regular interval.")] = False,
@@ -21,10 +33,13 @@ def poll(
     config = Configuration.find()
     meter = Meter(config.meter.driver, config.meter.endpoint)
 
+    typer.echo("                           total_consumption")
+    typer.echo("timestamp")
+
     def poll_once() -> None:
         try:
             reading = meter.poll()
-            typer.echo(f"{reading.timestamp.astimezone().isoformat()}, {reading.total_consumption}")
+            typer.echo(f"{reading.timestamp.astimezone()} {reading.total_consumption:>18}")
             if record:
                 with Database(config.database.path) as db:
                     db.readings.initialize()
