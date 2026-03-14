@@ -6,7 +6,7 @@ import meteostat as ms
 import pandas as pd
 
 
-class PrecipitationGauge:
+class Gauge:
     """Fetches historical hourly precipitation data for a geographic location.
 
     Queries nearby weather stations via the meteostat service and interpolates
