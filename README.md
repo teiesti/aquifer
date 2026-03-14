@@ -86,6 +86,8 @@ The general form is:
 aquifer <command> <subcommand> [options]
 ```
 
+Run `aquifer --help` (or append `--help` to any command or subcommand) for a full list of available options.
+
 ### `meter` – Water meter readings
 
 The `meter` command group manages discharge measurements polled from the water meter.
