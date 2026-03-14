@@ -40,7 +40,7 @@ class Meter:
         self._driver = driver
         self._endpoint = endpoint
 
-    def read(self) -> Reading:
+    def poll(self) -> Reading:
         """Fetch the current reading from the meter endpoint.
 
         Returns:

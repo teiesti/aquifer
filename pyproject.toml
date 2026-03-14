@@ -17,7 +17,7 @@ dependencies = [
     # "meteostat>=2.1",
     "pandas>=3.0",
     "requests>=2.32",
-    # "typer>=0.24",
+    "typer>=0.24",
 ]
 
 [project.optional-dependencies]
