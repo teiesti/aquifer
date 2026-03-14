@@ -2,10 +2,10 @@
 
 from datetime import datetime
 
-import meteostat as ms
 import typer
 
 from aquifer.configuration import Configuration
+from aquifer.rain import Gauge
 
 app = typer.Typer(help="External precipitation data fetched from nearby weather stations.")
 
@@ -14,16 +14,18 @@ app = typer.Typer(help="External precipitation data fetched from nearby weather 
 def history() -> None:
     """Display the history of precipitation data fetched from nearby weather stations."""
     config = Configuration.find()
-
-    point = ms.Point(config.location.latitude, config.location.longitude, config.location.elevation)
-    stations = ms.stations.nearby(point, radius=config.stations.radius, limit=config.stations.limit)
+    gauge = Gauge(
+        config.location.latitude,
+        config.location.longitude,
+        config.location.elevation,
+        config.stations.radius,
+        config.stations.limit,
+    )
 
     start = config.initial_state.timestamp
     end = datetime.now().astimezone()
-
     local_tz = end.tzinfo
 
-    ts = ms.hourly(stations, start, end, timezone="utc", parameters=[ms.Parameter.PRCP])
-    df = ms.interpolate(ts, point).fetch()
+    df = gauge.fetch(start, end).tz_convert(local_tz)
 
-    typer.echo(df.tz_convert(local_tz))
+    typer.echo(df)
