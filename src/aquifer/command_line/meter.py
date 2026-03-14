@@ -1,7 +1,7 @@
 """Command-line interface for managing water meter readings."""
 
-from datetime import datetime
 import time
+from datetime import datetime
 from typing import Annotated
 
 import typer
@@ -19,8 +19,7 @@ def history() -> None:
     config = Configuration.find()
     with Database(config.database.path) as db:
         local_tz = datetime.now().astimezone().tzinfo
-        df = db.readings.all()
-        df.index = df.index.tz_convert(local_tz)
+        df = db.readings.all().tz_convert(local_tz)
         typer.echo(df)
 
 
