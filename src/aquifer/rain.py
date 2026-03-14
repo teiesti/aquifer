@@ -1,3 +1,5 @@
+"""Precipitation data retrieval using the meteostat weather data service."""
+
 from datetime import datetime, timezone
 
 import meteostat as ms
@@ -5,6 +7,12 @@ import pandas as pd
 
 
 class Gauge:
+    """Fetches historical hourly precipitation data for a geographic location.
+
+    Queries nearby weather stations via the meteostat service and interpolates
+    the results to the given coordinates.
+    """
+
     _point: ms.Point
     _stations: pd.DataFrame
 
@@ -13,6 +21,20 @@ class Gauge:
         self._stations = ms.stations.nearby(self._point, radius=radius, limit=limit)
 
     def fetch(self, start: datetime, end: datetime) -> pd.DataFrame:
+        """Fetch hourly precipitation data for the configured location and time range.
+
+        Args:
+            start: Start of the time range (timezone-aware datetime).
+            end: End of the time range (timezone-aware datetime).
+
+        Returns:
+            A DataFrame indexed by timestamp (UTC) with a ``precipitation`` column
+            containing hourly precipitation amounts in millimetres.
+
+        Raises:
+            ValueError: If no precipitation data is available for the specified
+                location and time range.
+        """
         ts = ms.hourly(
             station=self._stations,
             start=start.astimezone(timezone.utc),
