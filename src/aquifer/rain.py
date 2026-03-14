@@ -21,4 +21,8 @@ class Gauge:
             parameters=[ms.Parameter.PRCP],
         )
         df = ms.interpolate(ts, self._point).fetch()
+
+        if df is None:
+            raise ValueError("No precipitation data available for the specified location and time range.")
+
         return df.rename(columns={"prcp": "precipitation"})
