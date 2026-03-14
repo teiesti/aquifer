@@ -1,7 +1,7 @@
 # Aquifer configuration – copy to aquifer.toml and adjust to your setup.
 
 [meter]
-# HTTP endpoint that exposes the cumulative discharge reading
+# HTTP endpoint that exposes the cumulative discharge reading.
 driver          = "wasserleser" # Driver to use, currently only "wasserleser" is supported
 endpoint        = "http://wasserleser/v1/data" # URL of the meter's API endpoint
 poll_interval   = 300           # Polling interval in seconds
