@@ -5,7 +5,7 @@ from datetime import datetime
 import typer
 
 from aquifer.configuration import Configuration
-from aquifer.precipitation import Gauge
+from aquifer.rain import Gauge
 
 app = typer.Typer(help="External precipitation data fetched from nearby weather stations.")
 
