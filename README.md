@@ -47,9 +47,35 @@ Outflow(t) = Reading(t) - Reading(t-1)
 
 We assume the readings are monotonically non-decreasing (each reading is greater than or equal to the previous one); meter resets or rollovers must be detected and handled separately.
 
-## Installation
+## Getting Started
 
-TODO
+### Prerequisites
+
+- Python 3.12 or later
+- A [Meteostat](https://meteostat.net/) weather station near your cistern
+- A water meter exposing a cumulative reading via HTTP (e.g. [wasserleser](https://stromleser.de/products/wasserleser))
+
+### Installation
+
+Install Aquifer directly from GitHub using pip:
+
+```sh
+pip install git+https://github.com/teiesti/aquifer.git
+```
+
+### Configuration
+
+Copy [aquifer.toml.example](aquifer.toml.example) and adjust it to your setup:
+
+```sh
+cp aquifer.toml.example aquifer.toml
+```
+
+Aquifer will look for a configuration in
+
+- `./aquifer.toml`,
+- `~/.config/aquifer/aquifer.toml`, and
+- `/etc/aquifer/aquifer.toml`.
 
 ## Usage
 
