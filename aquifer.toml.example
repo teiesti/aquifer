@@ -9,3 +9,24 @@ poll_interval   = 300           # Polling interval in seconds
 [database]
 # Configuration for the SQLite database used to store readings.
 path            = "aquifer.db"  # Path to the database file
+
+[location]
+# Geographic coordinates of the rainwater tank, used for fetching weather data.
+latitude        = 52.278889     # Latitude in degrees, between -90 and 90
+longitude       = 8.043056      # Longitude in degrees, between -180 and 180
+elevation       = 63            # Elevation above sea level in meters
+
+[stations]
+# Search criteria for nearby weather stations.
+radius          = 20000         # Search radius in meters
+limit           = 5             # Maximum number of stations to consider
+
+[tank]
+# Physical characteristics of the rainwater tank, used for storage estimation.
+capacity        = 10000.0       # Maximum tank capacity in liters
+collection_area = 100.0         # Effective roof collection area in square meters
+
+[initial_state]
+# Initial state of the rainwater tank at the start of the simulation.
+timestamp       = "2026-01-01T00:00:00+01:00" # Timestamp of the initial state in ISO 8601 format
+storage         = 5000.0         # Initial storage in liters

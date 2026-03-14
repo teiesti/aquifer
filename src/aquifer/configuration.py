@@ -2,6 +2,7 @@
 
 import tomllib
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Self
 
@@ -25,11 +26,48 @@ class Database:
 
 
 @dataclass
+class Location:
+    """Geographic coordinates of the rainwater tank, used for fetching weather data."""
+
+    latitude: float
+    longitude: float
+    elevation: int
+
+
+@dataclass
+class Stations:
+    """Search criteria for nearby weather stations."""
+
+    radius: int
+    limit: int
+
+
+@dataclass
+class Tank:
+    """Physical characteristics of the rainwater tank, used for storage estimation."""
+
+    capacity: float
+    collection_area: float
+
+
+@dataclass
+class InitialState:
+    """Initial state of the rainwater tank at the start of the simulation."""
+
+    timestamp: datetime
+    storage: float
+
+
+@dataclass
 class Configuration:
     """Top-level aquifer configuration loaded from a TOML file."""
 
     meter: Meter
     database: Database
+    location: Location
+    stations: Stations
+    tank: Tank
+    initial_state: InitialState
 
     @classmethod
     def load(cls, path: str | Path) -> Self:
@@ -58,6 +96,13 @@ class Configuration:
                 poll_interval=data["meter"]["poll_interval"],
             ),
             database=Database(**data["database"]),
+            location=Location(**data["location"]),
+            stations=Stations(**data["stations"]),
+            tank=Tank(**data["tank"]),
+            initial_state=InitialState(
+                timestamp=datetime.fromisoformat(data["initial_state"]["timestamp"]).astimezone(timezone.utc),
+                storage=data["initial_state"]["storage"],
+            ),
         )
 
     _SEARCH_PATHS = [
