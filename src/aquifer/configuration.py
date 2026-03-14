@@ -45,6 +45,8 @@ class Configuration:
             FileNotFoundError: If the file does not exist.
             tomllib.TOMLDecodeError: If the file is not valid TOML.
             KeyError: If required configuration keys are missing.
+            ValueError: If the meter driver value is not supported.
+            TypeError: If the database configuration contains unexpected keys.
         """
         with open(path, "rb") as file:
             data = tomllib.load(file)
@@ -77,7 +79,7 @@ class Configuration:
         for path in cls._SEARCH_PATHS:
             resolved = path.expanduser()
 
-            if resolved.exists():
+            if resolved.is_file():
                 return cls.load(resolved)
 
         searched = ", ".join(f"'{p}'" for p in cls._SEARCH_PATHS)
