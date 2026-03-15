@@ -1,3 +1,5 @@
+"""Tank storage estimation based on inflow and outflow data."""
+
 from datetime import datetime, timezone
 from functools import cached_property
 
@@ -9,6 +11,16 @@ from aquifer.rain import Gauge
 
 
 def clamp(value: float, min: float, max: float) -> float:
+    """Clamp a value to the given range.
+
+    Args:
+        value: The value to clamp.
+        min: The minimum allowed value.
+        max: The maximum allowed value.
+
+    Returns:
+        ``value`` clamped to ``[min, max]``.
+    """
     if value < min:
         return min
     elif value > max:
@@ -18,6 +30,8 @@ def clamp(value: float, min: float, max: float) -> float:
 
 
 class Estimation:
+    """Estimates tank storage history from inflow (rain) and outflow (meter) data."""
+
     _configuration: Configuration
 
     def __init__(self, configuration: Configuration) -> None:
@@ -25,14 +39,31 @@ class Estimation:
 
     @cached_property
     def start(self) -> datetime:
+        """Return the start of the estimation period.
+
+        Returns:
+            The timestamp of the initial state as stored in the configuration.
+        """
         return self._configuration.initial_state.timestamp
 
     @cached_property
     def end(self) -> datetime:
+        """Return the end of the estimation period.
+
+        Returns:
+            The current time in UTC.
+        """
         return datetime.now().astimezone(timezone.utc)
 
     @cached_property
     def inflow(self) -> pd.DataFrame:
+        """Fetch and compute hourly inflow from precipitation data.
+
+        Returns:
+            A DataFrame indexed by hour with ``precipitation`` and ``inflow``
+            columns, where ``inflow`` is precipitation multiplied by the tank
+            collection area.
+        """
         df = Gauge(
             self._configuration.location.latitude,
             self._configuration.location.longitude,
@@ -48,6 +79,13 @@ class Estimation:
 
     @cached_property
     def outflow(self) -> pd.DataFrame:
+        """Load and compute hourly outflow from meter readings.
+
+        Returns:
+            A DataFrame indexed by hour with ``total_consumption`` and
+            ``outflow`` columns, where ``outflow`` is the hourly difference in
+            total consumption.
+        """
         with Database(self._configuration.database.path) as db:
             df = db.readings.all()
 
@@ -59,6 +97,12 @@ class Estimation:
 
     @cached_property
     def storage(self) -> pd.DataFrame:
+        """Compute the hourly tank storage history.
+
+        Returns:
+            A DataFrame indexed by hour with ``storage`` (litres) and ``level``
+            (fraction of capacity) columns derived from inflow and outflow.
+        """
         df = self.inflow.join(self.outflow, how="right")
 
         current_storage = self._configuration.initial_state.storage
