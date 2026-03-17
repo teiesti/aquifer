@@ -1,3 +1,5 @@
+"""Dashboard for aquifer."""
+
 import dash_mantine_components as dmc  # type: ignore
 from dash import Dash
 
@@ -6,6 +8,7 @@ from aquifer.estimation import Estimation
 
 
 def serve_layout():
+    """Serve the layout for the dashboard."""
     config = Configuration.find()
     estimation = Estimation(config)
 
