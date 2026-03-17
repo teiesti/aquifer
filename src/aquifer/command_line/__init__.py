@@ -16,6 +16,7 @@ app.add_typer(tank.app, name="tank")
 @app.command()
 def dashboard(
     debug: Annotated[bool, typer.Option("--debug", help="Run the dashboard in debug mode.")] = False,
+    host: Annotated[str, typer.Option("--host", help="Host to bind the dashboard server to.")] = "127.0.0.1",
 ) -> None:
     """Start the dashboard."""
     try:
@@ -28,4 +29,4 @@ def dashboard(
         )
         raise typer.Exit(code=1) from e
 
-    dashboard_app.run(debug=debug)
+    dashboard_app.run(debug=debug, host=host)
