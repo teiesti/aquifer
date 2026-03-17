@@ -79,6 +79,8 @@ Aquifer will look for a configuration in
 
 ## Usage
 
+Run `aquifer --help` for a full list of commands and options.
+
 Once configured, start polling your water meter in the background:
 
 ```sh
