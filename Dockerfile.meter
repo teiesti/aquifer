@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY . .
 
-RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir --root-user-action=ignore .
 
 CMD ["aquifer", "meter", "poll", "--record", "--watch"]

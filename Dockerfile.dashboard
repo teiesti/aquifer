@@ -4,7 +4,8 @@ WORKDIR /app
 
 COPY . .
 
-RUN pip install --no-cache-dir ".[dashboard]"
+RUN pip install --no-cache-dir --root-user-action=ignore ".[dashboard]" \
+    && pip install --no-cache-dir --root-user-action=ignore gunicorn
 
 EXPOSE 8050
 

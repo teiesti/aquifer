@@ -1,23 +1,30 @@
+# Aquifer Docker Compose – copy to compose.yml and adjust to your setup.
+#
+# Both services share the `aquifer-data` volume mounted at /app (the working
+# directory).  Place your `aquifer.toml` and the SQLite database file inside
+# that volume so both containers can find them.
+
 services:
+
   meter:
+    # Continuously polls the water meter and records readings to the database.
     build:
       context: .
       dockerfile: Dockerfile.meter
     volumes:
-      - ./aquifer.toml:/etc/aquifer/aquifer.toml:ro
-      - aquifer-data:/data
+      - aquifer-data:/app   # Shared volume for aquifer.toml and aquifer.db
 
   dashboard:
+    # Serves the storage-estimation dashboard on port 8050.
     build:
       context: .
       dockerfile: Dockerfile.dashboard
     ports:
-      - "8050:8050"
+      - "8050:8050"         # Expose the dashboard to the host
     volumes:
-      - ./aquifer.toml:/etc/aquifer/aquifer.toml:ro
-      - aquifer-data:/data
+      - aquifer-data:/app   # Shared volume for aquifer.toml and aquifer.db
     depends_on:
       - meter
 
 volumes:
-  aquifer-data:
+  aquifer-data:             # Persistent storage for configuration and database
