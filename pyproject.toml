@@ -24,6 +24,7 @@ dependencies = [
 dashboard = [
     "dash>=4.0",
     "dash-mantine-components>=2.6",
+    "gunicorn>=23.0",
 ]
 dev = [
     "mypy>=1.18",

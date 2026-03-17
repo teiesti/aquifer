@@ -1,0 +1,23 @@
+services:
+  meter:
+    build:
+      context: .
+      dockerfile: Dockerfile.meter
+    volumes:
+      - ./aquifer.toml:/etc/aquifer/aquifer.toml:ro
+      - aquifer-data:/data
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+    ports:
+      - "8050:8050"
+    volumes:
+      - ./aquifer.toml:/etc/aquifer/aquifer.toml:ro
+      - aquifer-data:/data
+    depends_on:
+      - meter
+
+volumes:
+  aquifer-data:
