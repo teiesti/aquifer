@@ -1,5 +1,4 @@
-
-import dash_mantine_components as dmc
+import dash_mantine_components as dmc  # type: ignore
 from dash import Dash
 
 from aquifer.configuration import Configuration
