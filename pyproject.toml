@@ -21,6 +21,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+dashboard = [
+    "dash>=4.0",
+    "dash-mantine-components>=2.6",
+]
 dev = [
     "mypy>=1.18",
     "pandas-stubs>=3.0",
