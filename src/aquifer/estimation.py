@@ -107,16 +107,15 @@ class Estimation:
         """
         df = self.inflow.join(self.outflow, how="right")
 
-        current_storage = self._configuration.initial_state.storage
+        current = self._configuration.initial_state.storage
+        capacity = self._configuration.tank.capacity
+        values = []
 
-        def storage(row):
-            nonlocal current_storage
-            current_storage = clamp(
-                current_storage + row["inflow"] - row["outflow"], 0, self._configuration.tank.capacity
-            )
-            return current_storage
+        for row in df.itertuples():
+            current = clamp(current + row.inflow - row.outflow, 0, capacity)
+            values.append(current)
 
-        df["storage"] = df.apply(storage, axis=1)
-        df["level"] = df["storage"] / self._configuration.tank.capacity
+        df["storage"] = values
+        df["level"] = df["storage"] / capacity
 
         return df
