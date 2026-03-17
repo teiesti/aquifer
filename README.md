@@ -79,7 +79,33 @@ Aquifer will look for a configuration in
 
 ## Usage
 
-TODO
+Once configured, start polling your water meter in the background:
+
+```sh
+aquifer meter poll --record --watch
+```
+
+This periodically reads the meter and stores each reading in the local database.
+
+To estimate the current tank storage level:
+
+```sh
+aquifer tank history
+```
+
+To inspect recorded meter readings or fetched precipitation data:
+
+```sh
+aquifer meter history
+aquifer rain history
+```
+
+To start the interactive dashboard (requires optional dependencies):
+
+```sh
+pip install "aquifer[dashboard] @ git+https://github.com/teiesti/aquifer.git"
+aquifer dashboard
+```
 
 ## License
 
