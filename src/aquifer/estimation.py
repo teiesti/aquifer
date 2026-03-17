@@ -10,23 +10,24 @@ from aquifer.database import Database
 from aquifer.rain import Gauge
 
 
-def clamp(value: float, min: float, max: float) -> float:
+def clamp(value: float, min_value: float, max_value: float) -> float:
     """Clamp a value to the given range.
 
     Args:
         value: The value to clamp.
-        min: The minimum allowed value.
-        max: The maximum allowed value.
+        min_value: The minimum allowed value.
+        max_value: The maximum allowed value.
 
     Returns:
-        ``value`` clamped to ``[min, max]``.
+        ``value`` clamped to ``[min_value, max_value]``.
     """
-    if value < min:
-        return min
-    elif value > max:
-        return max
-    else:
-        return value
+    if value < min_value:
+        return min_value
+
+    if value > max_value:
+        return max_value
+
+    return value
 
 
 class Estimation:
@@ -87,6 +88,7 @@ class Estimation:
             total consumption.
         """
         with Database(self._configuration.database.path) as db:
+            db.readings.initialize()
             df = db.readings.all()
 
         index = pd.date_range(self.start, self.end, freq="h")
