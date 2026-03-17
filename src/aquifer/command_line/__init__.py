@@ -4,8 +4,6 @@ from typing import Annotated
 
 import typer
 
-from aquifer.dashboard import app as dashboard_app
-
 from . import meter, rain, tank
 
 app = typer.Typer(help="Rainwater tank storage estimation using rainfall data and metered water use.")
@@ -20,4 +18,14 @@ def dashboard(
     debug: Annotated[bool, typer.Option("--debug", help="Run the dashboard in debug mode.")] = False,
 ) -> None:
     """Start the dashboard."""
+    try:
+        from aquifer.dashboard import app as dashboard_app  # noqa: PLC0415
+    except ImportError as e:
+        typer.echo(
+            "The dashboard requires optional dependencies that are not installed.\n"
+            "Please install them with:\n"
+            "    pip install aquifer[dashboard]"
+        )
+        raise typer.Exit(code=1) from e
+
     dashboard_app.run(debug=debug)
