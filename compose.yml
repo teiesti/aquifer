@@ -1,0 +1,19 @@
+services:
+
+  meter:
+    build:
+      context: .
+      dockerfile: Dockerfile.meter
+    volumes:
+      - .:/app
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+    ports:
+      - "8050:8050"
+    volumes:
+      - .:/app
+    depends_on:
+      - meter
