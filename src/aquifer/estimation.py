@@ -111,8 +111,11 @@ class Estimation:
         capacity = self._configuration.tank.capacity
         values = []
 
-        for row in df.itertuples():
-            current = clamp(current + row.inflow - row.outflow, 0, capacity)
+        inflow_arr = df["inflow"].to_numpy(dtype=float)
+        outflow_arr = df["outflow"].to_numpy(dtype=float)
+
+        for inflow_val, outflow_val in zip(inflow_arr, outflow_arr, strict=True):
+            current = clamp(current + inflow_val - outflow_val, 0, capacity)
             values.append(current)
 
         df["storage"] = values
