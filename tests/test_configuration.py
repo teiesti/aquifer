@@ -21,6 +21,10 @@ def test_configuration_load(pytestconfig):
 
     assert config.tank.capacity == 10000.0
     assert config.tank.collection_area == 100.0
+    assert config.tank.retention_threshold == 1.0
+    assert config.tank.drying_rate == 0.05
+    assert config.tank.runoff_coefficient == 0.85
 
     assert config.initial_state.timestamp == datetime.fromisoformat("2026-01-01T00:00:00+01:00")
     assert config.initial_state.storage == 5000.0
+    assert config.initial_state.retention == 0.0

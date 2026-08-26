@@ -48,6 +48,9 @@ class Tank:
 
     capacity: float
     collection_area: float
+    retention_threshold: float
+    drying_rate: float
+    runoff_coefficient: float
 
 
 @dataclass
@@ -56,6 +59,7 @@ class InitialState:
 
     timestamp: datetime
     storage: float
+    retention: float
 
 
 @dataclass
@@ -102,6 +106,7 @@ class Configuration:
             initial_state=InitialState(
                 timestamp=datetime.fromisoformat(data["initial_state"]["timestamp"]).astimezone(timezone.utc),
                 storage=data["initial_state"]["storage"],
+                retention=data["initial_state"]["retention"],
             ),
         )
 
