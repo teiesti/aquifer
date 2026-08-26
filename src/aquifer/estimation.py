@@ -89,7 +89,9 @@ class Estimation:
 
         df["retention"] = retention_history
         df["runoff"] = runoff_history
-        df["inflow"] = df["runoff"] * self._configuration.tank.collection_area * self._configuration.tank.runoff_coefficient
+        df["inflow"] = (
+            df["runoff"] * self._configuration.tank.collection_area * self._configuration.tank.runoff_coefficient
+        )
 
         return df
 
