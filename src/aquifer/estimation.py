@@ -74,7 +74,22 @@ class Estimation:
         ).fetch(self.start, self.end)
 
         df.fillna(0, inplace=True)
-        df["inflow"] = df["precipitation"] * self._configuration.tank.collection_area
+
+        retention = self._configuration.initial_state.retention
+        retention_history = []
+        runoff_history = []
+
+        for precipitation in df["precipitation"]:
+            retention = max(0, retention - self._configuration.tank.drying_rate)
+            absorbed = min(precipitation, self._configuration.tank.retention_threshold - retention)
+            retention += absorbed
+
+            retention_history.append(retention)
+            runoff_history.append(precipitation - absorbed)
+
+        df["retention"] = retention_history
+        df["runoff"] = runoff_history
+        df["inflow"] = df["runoff"] * self._configuration.tank.collection_area * self._configuration.tank.runoff_coefficient
 
         return df
 
