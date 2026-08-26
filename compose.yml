@@ -1,0 +1,24 @@
+services:
+
+  meter:
+    build:
+      context: .
+      dockerfile: Dockerfile.meter
+    volumes:
+      - .:/app
+    healthcheck:
+      test: ["CMD", "test", "-f", "/app/aquifer.db"]
+      interval: 5s
+      retries: 12
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+    ports:
+      - "8050:8050"
+    volumes:
+      - .:/app
+    depends_on:
+      meter:
+        condition: service_healthy
